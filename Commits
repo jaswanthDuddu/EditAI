@@ -1,0 +1,5 @@
+-Installed OpenCV
+-Fixed existing open source code
+-Acquired learned abour OpenAI API access/keys
+-Developed Python script to generate parseable text instructions for AI video editing features
+-Wrote C++ header that defines a class for an AI video object along w/ themes, transitions, keywords etc.
