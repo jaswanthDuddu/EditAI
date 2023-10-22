@@ -8,13 +8,20 @@ Created on Fri Oct 13 16:05:28 2023
 import openai
 
 # Set your API key
-api_key = "Your_API_KEY"
+api_key = "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"
 
 # Initialize the OpenAI API client
 openai.api_key = api_key
 
 # Accept user input (the word)
 user_input = input("Enter a word: ")
+
+
+
+user_input = "what is the general pacing, transitions, color correction, and effects of" + user_input + " videos. give specfic  and generalized 1-3 word response for each in the form - (eg. pacing: fast, color correction: warm, effects: slow motion)"
+
+
+
 
 # Generate text using GPT-3.5
 response = openai.Completion.create(
