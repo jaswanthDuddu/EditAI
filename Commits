@@ -6,20 +6,27 @@ Install OpenCV
 Fix Existing Open Source Code
 
   -This commit addresses and fixes issues in the existing open source code.
+   Fixed all errors and set it up to enable future functionalities.
 
 Acquire OpenAI API Access Knowledge
 
   -This commit documents the process of acquiring knowledge about how to access
-  and manage OpenAI API keys.
+  and manage OpenAI API keys. We also learned how OpenAI's API works, and from
+  there, determined how we will implement it into our project.
 
 Develop Python Script for AI Video Editing Instructions
 
   -This commit adds a Python script that generates parseable text instructions
-  for AI video editing features. The script is designed to facilitate user
+  for AI video editing features. The script is designed to enable user
   interactions with the AI video editing system.
+  -For example, when prompted for the genre of the video...
+  User enters: sports
+
+  Our script outputs a text file containing:
+  Pacing: fast, transitions: quick, color correction:enhanced, effects: slow motion
 
 Define C++ Class for AI Video Object
 
   -This commit introduces a C++ header file that defines a class for an AI video
   object. The class encompasses themes, transitions, keywords, and other
-  essential attributes for video editing.
+  essential attributes from the output text file to help generate a unique video.
