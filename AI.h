@@ -20,7 +20,7 @@ public:
 
     //Color correction
     void warm(cv::VideoCapture& inputVideo, cv::VideoWriter& outputVideo); //warm color correction
-    void cold(); //cold color correction
+    void cold(cv::VideoCapture& inputVideo, cv::VideoWriter& outputVideo); //cold color correction
 
     //Soft transition
     void fade(Clip* clip1, Clip* clip2); //handles fade transition
