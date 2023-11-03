@@ -19,12 +19,12 @@ public:
     void pacing(); //generates numbers that can influence the rate at which other functions (transitions, clip length, clip speed).
 
     //Color correction
-    void warm(); //warm color correction
+    void warm(cv::VideoCapture& inputVideo, cv::VideoWriter& outputVideo); //warm color correction
     void cold(); //cold color correction
 
     //Soft transition
-    void fade(); //handles fade transition
-    void blur(); //handles blur transition
+    void fade(Clip* clip1, Clip* clip2); //handles fade transition
+    void blur(Clip* clip1, Clip* clip2); //handles blur transition
 
     //Hard transition
     void wipe(); //handles wipe transition
