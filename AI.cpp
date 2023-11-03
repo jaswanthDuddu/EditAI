@@ -151,3 +151,40 @@ void AI::warm(cv::VideoCapture& inputVideo, cv::VideoWriter& outputVideo)
     inputVideo.release();
     outputVideo.release();
 }
+
+
+void AI::cold(cv::VideoCapture& inputVideo, cv::VideoWriter& outputVideo) {
+    if (!inputVideo.isOpened()) {
+        std::cerr << "Error: Could not open input video." << std::endl;
+        return;
+    }
+
+    int frame_width = static_cast<int>(inputVideo.get(cv::CAP_PROP_FRAME_WIDTH));
+    int frame_height = static_cast<int>(inputVideo.get(cv::CAP_PROP_FRAME_HEIGHT));
+    double fps = inputVideo.get(cv::CAP_PROP_FPS);
+
+    cv::Size frame_size(frame_width, frame_height);
+    
+    while (true) {
+        cv::Mat frame;
+        inputVideo >> frame;
+
+        if (frame.empty()) {
+            break;
+        }
+
+        // Apply cold coloring grading effect to the frame
+        // For a simple cold effect, we'll decrease the blue channel intensity
+        cv::Mat cold_frame = frame.clone();
+        cv::Mat channels[3];
+        cv::split(cold_frame, channels);
+        channels[0] -= 30; // Decrease the blue channel intensity
+        cv::merge(channels, 3);
+
+        // Write the processed frame to the output video
+        outputVideo.write(cold_frame);
+    }
+
+    inputVideo.release();
+    outputVideo.release();
+}
