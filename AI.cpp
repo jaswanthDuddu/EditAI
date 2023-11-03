@@ -3,6 +3,7 @@
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
+#include <opencv2/opencv.hpp>
 #include <opencv2/objdetect.hpp>
 #include <opencv2/video/tracking.hpp>
 #include <iostream>
@@ -109,5 +110,44 @@ void AI::blur(Clip* clip1, Clip* clip2)
     // Release video capture and writer
     video1.release();
     video2.release();
+    outputVideo.release();
+}
+
+
+
+void AI::warm(cv::VideoCapture& inputVideo, cv::VideoWriter& outputVideo) 
+{
+    if (!inputVideo.isOpened()) {
+        std::cerr << "Error: Could not open input video." << std::endl;
+        return;
+    }
+
+    int frame_width = static_cast<int>(inputVideo.get(cv::CAP_PROP_FRAME_WIDTH));
+    int frame_height = static_cast<int>(inputVideo.get(cv::CAP_PROP_FRAME_HEIGHT));
+    double fps = inputVideo.get(cv::CAP_PROP_FPS);
+
+    cv::Size frame_size(frame_width, frame_height);
+    
+    while (true) {
+        cv::Mat frame;
+        inputVideo >> frame;
+
+        if (frame.empty()) {
+            break;
+        }
+
+        // Apply warm coloring grading effect to the frame
+        // For a simple warm effect, we'll increase the red channel intensity
+        cv::Mat warm_frame = frame.clone();
+        cv::Mat channels[3];
+        cv::split(warm_frame, channels);
+        channels[2] += 30; // Increase the red channel intensity
+        cv::merge(channels, 3, warm_frame);
+
+        // Write the processed frame to the output video
+        outputVideo.write(warm_frame);
+    }
+
+    inputVideo.release();
     outputVideo.release();
 }
