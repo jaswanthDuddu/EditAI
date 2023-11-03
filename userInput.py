@@ -8,7 +8,7 @@ Created on Fri Oct 13 16:05:28 2023
 import openai
 
 # Set your API key
-api_key = "YOUR_API_KEY"
+api_key = "YOUR API KEY"
 
 # Initialize the OpenAI API client
 openai.api_key = api_key
@@ -17,10 +17,10 @@ openai.api_key = api_key
 user_input = input("Enter a word: ")
 
 
+generalEffects = "what is the general pacing, transitions, color correction, and effects of" + user_input + " videos. give specfic  and generalized 1-3 word response for each in the form - (eg. pacing: fast, color correction: warm, effects: slow motion)"
+additionalResources = "in general, for " + user_input + ", do they need stock images to complement current clips? Answer yes/no 1 word. Also, for " + user_input + ", in general, would it benefit from AI generated summary voice over? Answer yes/no 1 word."
 
-user_input = "what is the general pacing, transitions, color correction, and effects of" + user_input + " videos. give specfic  and generalized 1-3 word response for each in the form - (eg. pacing: fast, color correction: warm, effects: slow motion)"
-
-
+user_input = generalEffects + additionalResources
 
 
 # Generate text using GPT-3.5
