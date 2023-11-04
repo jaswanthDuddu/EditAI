@@ -154,7 +154,6 @@ void AI::wipe(cv::VideoCapture& inputVideo1, cv::VideoCapture& inputVideo2, cv::
 
 
 //Color Grading 
-
 void AI::warm(cv::VideoCapture& inputVideo, cv::VideoWriter& outputVideo) 
 {
     if (!inputVideo.isOpened()) {
@@ -223,6 +222,38 @@ void AI::cold(cv::VideoCapture& inputVideo, cv::VideoWriter& outputVideo) {
 
         // Write the processed frame to the output video
         outputVideo.write(cold_frame);
+    }
+
+    inputVideo.release();
+    outputVideo.release();
+}
+
+
+//Effects
+void slowMotion(cv::VideoCapture& inputVideo, cv::VideoWriter& outputVideo, double slowFactor) {
+    if (!inputVideo.isOpened()) {
+        std::cerr << "Error: Could not open input video." << std::endl;
+        return;
+    }
+
+    int frame_width = static_cast<int>(inputVideo.get(cv::CAP_PROP_FRAME_WIDTH));
+    int frame_height = static_cast<int>(inputVideo.get(cv::CAP_PROP_FRAME_HEIGHT));
+    double fps = inputVideo.get(cv::CAP_PROP_FPS);
+
+    cv::Size frame_size(frame_width, frame_height);
+    
+    while (true) {
+        cv::Mat frame;
+        inputVideo >> frame;
+
+        if (frame.empty()) {
+            break;
+        }
+
+        // Writes the same frame multiple times to create the slow-motion effect
+        for (int i = 0; i < slowFactor; i++) {
+            outputVideo.write(frame);
+        }
     }
 
     inputVideo.release();
