@@ -27,7 +27,7 @@ public:
     void blur(Clip* clip1, Clip* clip2); //handles blur transition
 
     //Hard transition
-    void wipe(); //handles wipe transition
+    void wipe(cv::VideoCapture& inputVideo1, cv::VideoCapture& inputVideo2, cv::VideoWriter& outputVideo); //handles wipe transition
 
     //Effects
     void slowMotion(); //handles slow motion effect
