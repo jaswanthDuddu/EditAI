@@ -30,7 +30,7 @@ public:
     void wipe(cv::VideoCapture& inputVideo1, cv::VideoCapture& inputVideo2, cv::VideoWriter& outputVideo); //handles wipe transition
 
     //Effects
-    void slowMotion(); //handles slow motion effect
+    void slowMotion(cv::VideoCapture& inputVideo, cv::VideoWriter& outputVideo, double slowFactor); //handles slow motion effect
 
 private:
     string database; //text file name of database of words to compare
