@@ -188,3 +188,43 @@ void AI::cold(cv::VideoCapture& inputVideo, cv::VideoWriter& outputVideo) {
     inputVideo.release();
     outputVideo.release();
 }
+
+
+void AI::wipe(cv::VideoCapture& inputVideo1, cv::VideoCapture& inputVideo2, cv::VideoWriter& outputVideo) {
+    if (!inputVideo1.isOpened() || !inputVideo2.isOpened()) {
+        std::cerr << "Error: Could not open input videos." << std::endl;
+        return;
+    }
+
+    int frame_width = static_cast<int>(inputVideo1.get(cv::CAP_PROP_FRAME_WIDTH));
+    int frame_height = static_cast<int>(inputVideo1.get(cv::CAP_PROP_FRAME_HEIGHT));
+    double fps = inputVideo1.get(cv::CAP_PROP_FPS);
+
+    cv::Size frame_size(frame_width, frame_height);
+    
+    while (true) {
+        cv::Mat frame1, frame2;
+        inputVideo1 >> frame1;
+        inputVideo2 >> frame2;
+
+        if (frame1.empty() || frame2.empty()) {
+            break;
+        }
+
+        // Calculate the wipe transition effect by gradually revealing frame2 over frame1
+        double alpha = 0.0; // Transition factor
+        while (alpha <= 1.0) {
+            cv::Mat combined_frame;
+            cv::addWeighted(frame1, 1.0 - alpha, frame2, alpha, 0.0, combined_frame);
+            outputVideo.write(combined_frame);
+            alpha += 0.02; //adjust the transition speed by changing this value
+        }
+
+        // Write the final frame from inputVideo2 (frame2) to outputVideo
+        outputVideo.write(frame2);
+    }
+
+    inputVideo1.release();
+    inputVideo2.release();
+    outputVideo.release();
+}
