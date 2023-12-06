@@ -219,6 +219,12 @@ void Clip::Create(double max_length, double min_length)
 	
 }
 
+void setColor(string color_correction)
+{
+	color = color_correction;
+}
+
+
 //Set's the starting timestamp (in seconds).
 //"start" is a floating point number corresponding to the new start time.
 void Clip::setStart(float start)
@@ -302,6 +308,35 @@ void Clip::Display()
 				int thickness = 2;
 
 				putText(img, to_string(id), textPosition, FONT_HERSHEY_SIMPLEX, fontSize, textColor, thickness);
+
+				/// OUTPUTS COLOR CORRECTION ///
+				//If the OpenAI output is warm
+				if (color == "warm")
+				{
+					// Apply a warm color filter by adjusting the color channels
+					for (int y = 0; y < image.rows; y++) {
+						for (int x = 0; x < image.cols; x++) {
+							// Increase the intensity of the red and green channels
+							img.at<cv::Vec3b>(y, x)[0] = cv::saturate_cast<uchar>(img.at<cv::Vec3b>(y, x)[0] * 0.9); // Blue
+							img.at<cv::Vec3b>(y, x)[1] = cv::saturate_cast<uchar>(img.at<cv::Vec3b>(y, x)[1] * 1.2); // Green
+							img.at<cv::Vec3b>(y, x)[2] = cv::saturate_cast<uchar>(img.at<cv::Vec3b>(y, x)[2] * 1.5); // Red
+						}
+					}
+				}
+				else if (color == "cool")
+				{
+					// Apply a cool color filter by adjusting the color channels
+					for (int y = 0; y < image.rows; y++) {
+						for (int x = 0; x < image.cols; x++) {
+							// Increase the intensity of the blue channel
+							img.at<cv::Vec3b>(y, x)[0] = cv::saturate_cast<uchar>(img.at<cv::Vec3b>(y, x)[0] * 1.5); // Blue
+							// Decrease the intensity of the green and red channels
+							img.at<cv::Vec3b>(y, x)[1] = cv::saturate_cast<uchar>(img.at<cv::Vec3b>(y, x)[1] * 0.9); // Green
+							img.at<cv::Vec3b>(y, x)[2] = cv::saturate_cast<uchar>(img.at<cv::Vec3b>(y, x)[2] * 0.7); // Red
+						}
+					}
+				}
+
 				imshow("Preview", img);
 				int delay = static_cast<int>(1000 / getFPS());
 
