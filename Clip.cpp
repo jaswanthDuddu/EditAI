@@ -9,6 +9,8 @@
 #include <opencv2/objdetect.hpp>
 #include <random>
 #include <string>
+#include "AI.h"
+#include "Clip.h"
 
 using namespace cv;
 using namespace std;
