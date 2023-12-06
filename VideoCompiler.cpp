@@ -19,6 +19,108 @@
 using namespace cv; 
 using namespace std;
 
+void parseInstructions(string filename)
+{
+	ifstream inputFile(filename);
+
+	AI AIData;
+
+	///	SEARCH FOR KEYWORDS ///
+
+	//Parses through text file, finds the word "Pacing," stores the first word after it (the value) in the variable pacing.
+	string pacing;
+
+	string line;
+	int lineNumber = 0;
+	while (getline(inputFile, line)) {
+		lineNumber++;
+
+		// Find the position of the word "pacing"
+		size_t found = line.find("pacing");
+
+		// If "pacing" is found, extract the next word
+		if (found != string::npos) {
+			istringstream iss(line.substr(found + 6)); // Assuming "pacing" has 6 characters
+			iss >> pacing;
+
+			//Updates the pacing in the AI object
+			AIData.setPacing(pacing);
+			pacing = "";
+			break;
+		}
+	}
+
+
+	//Finds and stores "transitions"
+	string transitions;
+
+	lineNumber = 0;
+	while (getline(inputFile, line)) {
+		lineNumber++;
+
+		// Find the position of the word "pacing"
+		size_t found = line.find("transitions");
+
+		// If "pacing" is found, extract the next word
+		if (found != string::npos) {
+			istringstream iss(line.substr(found + 11)); // Assuming "transitions" has 11 characters
+			iss >> transitions;
+
+			//Updates the pacing in the AI object
+			AIData.setTransitions(transitions);
+			transitions = "";
+			break;
+		}
+	}
+
+	//Finds and stores "color correction"
+	string color_correction;
+
+	lineNumber = 0;
+	while (getline(inputFile, line)) {
+		lineNumber++;
+
+		// Find the position of the word "pacing"
+		size_t found = line.find("color correction");
+
+		// If "pacing" is found, extract the next word
+		if (found != string::npos) {
+			istringstream iss(line.substr(found + 16)); // Assuming "color correction" has 11 characters
+			iss >> color_correction;
+
+			//Updates the pacing in the AI object
+			AIData.setColorCorrection(color_correction);
+			color_correction = "";
+			break;
+		}
+	}
+
+	//Finds and stores "effects"
+	string effects;
+
+	lineNumber = 0;
+	while (getline(inputFile, line)) {
+		lineNumber++;
+
+		// Find the position of the word "pacing"
+		size_t found = line.find("effects");
+
+		// If "pacing" is found, extract the next word
+		if (found != string::npos) {
+			istringstream iss(line.substr(found + 7)); // Assuming "color correction" has 11 characters
+			iss >> effects;
+
+			//Updates the pacing in the AI object
+			AIData.setEffects(effects);
+			effects = "";
+			break;
+		}
+	}
+
+	//This parses the text file and stores the neccessary information into the AI object.
+
+}
+
 //Fixes the input path by ensuring it includes an extra backslash.
 //In C++, a single backslash "\" is as an escape character, which can lead to path-related issues. This function adds an extra backslash in the path to ensure proper formatting.
 string fixDirectory(const string& path)
@@ -230,6 +332,8 @@ int main()
 			getline(cin, video_path);
 
 			readingFile << video_path;
+
+
 			cout << "Add clip names to project: (Enter <Q> to stop)" << endl;
 			string clip_name;
 			cin >> clip_name;
@@ -260,6 +364,46 @@ int main()
 		}
 	}
 	cout << endl;	
+
+	///	USER INPUTS THE PATH TO THE INSTRUCTIONS		///
+
+
+	std::ifstream inputFile("example.txt");
+
+	// Check if the file is open
+	if (!inputFile.is_open()) {
+		std::cerr << "Error opening the file." << std::endl;
+		return 1; // Return an error code
+	}
+
+	// Read and print the contents of the file
+	std::string line;
+	while (std::getline(inputFile, line)) {
+		std::cout << line << std::endl;
+	}
+
+	// Close the file
+	inputFile.close();
+
+	//Finds the intstructions file
+	cout << "Add name of instruction file" << endl;
+	string instruction_name;
+	cin >> instruction_name;
+
+	string the_instruction_file = instruction_name + ".txt";
+
+	std::ifstream inputFile("the_instruction_file");
+
+	//Checks if the input file exists in the clips folder
+	if (doesFileExist(instruction_name, video_path) == true) //Makes sure video file exists before adding it to the text file.
+		//Initiate the text file parsing instructions
+		parseInstructions(the_instruction_file);
+	else
+	{
+		cout << "Video file not found at path.";
+	}
+
+
 	
 	//Creates a file to redirect the console output. OpenCV displays unneccessary information to the console. This is removed for readability.
 	ofstream file("output.txt"); 
@@ -281,7 +425,15 @@ int main()
 		for (int i = 1; i < names.size(); i++) //Starts at 1 to ignore the path name.
 		{
 			string video_file = names[i];
+			
+			
+			
 			Clip* curr = new Clip(video_file, clip_num, path); //Creates Clip object and adds it to the heap for dynamic memory allocation. Linked list is then built.
+
+
+			/// Passes information from AI object into the Clip ///
+			string color_correction = AI.findColorCorrection();
+			curr->setColor(color_correction);
 
 			if (clip == nullptr)
 			{
@@ -311,6 +463,7 @@ int main()
 
 		//Performs the video processing in Clip object and iterates through each clip in the list.
 		itr->Create();
+
 		max_id = itr->id;
 		itr = itr->next;
 
