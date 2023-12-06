@@ -36,6 +36,9 @@ public:
 
 private:
     // Member Variables
+
+    string color;
+
     double video_length;
     double start_timestamp = 0;
     double end_timestamp = 0;
