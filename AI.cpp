@@ -17,6 +17,7 @@
 #include "AI.h"
 #include "Clip.h"
 
+
 //Namespaces
 using namespace cv;
 using namespace std;
@@ -27,9 +28,134 @@ AI::AI(std::string text_file)
     txt_file = text_file;
 }
 
-//Transitions
+void setPacing(string value)
+{
+    pacing.push_back(value);
+}
+
+void setTransitions(string value)
+{
+    transitions.push_back(value);
+}
+
+void setColorCorrection(string value)
+{
+    color_correction.push_back(value);
+}
+
+void setEffects(string value)
+{
+    effects.push_back(value);
+}
+
+
+string findColorCorrection()
+{
+    string color;
+
+    std::vector<std::string> warmColorWords = {
+        "fiery", "vibrant", "lively", "rich", "sunny",
+        "glowing", "radiant", "warm", "earthy", "inviting",
+        "golden", "amber", "rusty", "cozy", "tropical",
+        "blazing", "intense", "hearty", "warm", "balmy"
+    };
+
+    std::vector<std::string> coldColorWords  = {
+        "icy", "frosty", "chilly", "crisp", "azure",
+        "cerulean", "cool", "refreshing", "breezy", "wintry",
+        "polar", "frozen", "glacial", "frigid", "calm",
+        "tranquil", "serene", "aquatic", "steel", "cobalt"
+    };
+
+    //Finds if clips should have a warm color corrction
+    for (int i = 0; i < warmColorWords.size(); i++)
+    {
+        for (int z = 0; z < warmColorWords.size(); z++)
+        {
+            if (warmColorWords[i] = color_correction[z])
+            {
+                color = "warm";
+                return color;
+            }
+        }
+    }
+
+    //Finds if clips should have a cold color correction
+    for (int i = 0; i < coldColorWords.size(); i++)
+    {
+        for (int z = 0; z < coldColorWords.size(); z++)
+        {
+            if (coldColorWords[i] = color_correction[z])
+            {
+                color = "cold";
+                return color;
+            }
+        }
+    }
+
+
+    return color;
+}
+
+string findTransition()
+{
+    string transition = "none";
+
+    //Database to identify OpenAI's reponse
+    vector<std::string> wipe_keywords = {
+        "swift", "quick", "speedy", "rapid", "hasty",
+        "brisk", "fleet", "nimble", "prompt", "expeditious",
+        "agile", "lively", "zippy", "spry", "accelerated",
+        "hurried", "energetic", "speeding", "fleet-footed", "whirlwind"
+    };
+
+
+    vector<std::string> fade_keywords = {
+        "calm", "easy", "relaxed", "leisurely", "mellow",
+        "placid", "serene", "soft", "smooth", "unhurried",
+        "deliberate", "pliable", "gentle", "tender", "patient",
+        "easygoing", "gradual", "peaceful", "tranquil", "sluggish"
+    };
+
+    //Finds if clips should wipe if the input is fast
+    for (int i = 0; i < wipe_keywords.size(); i++)
+    {
+        for (int z = 0; z < wipe_keywords.size(); z++)
+        {
+            if (wipe_keywords[i] = transitions[z])
+            {
+                transition = "wipe";
+                return transition;
+            }
+        }
+    }
+
+    //Finds if clips should fade if the input is slow
+    for (int i = 0; i < fade_keywords.size(); i++)
+    {
+        for (int z = 0; z < fade_keywords.size(); z++)
+        {
+            if (fade_keywords[i] = transitions[z])
+            {
+                transition = "fade";
+                return transition;
+            }
+        }
+    }
+
+    return transition;
+}
+
+AI.findTransition();
+string pacing = AI.findPacing();
+string color_correction = AI.findColorCorrection();
+string effects = AI.findEffects();
+
+/// STORES TRANSITION/EFFECT INFORMATION ///
+
 void AI::fade(Clip* clip1, Clip* clip2)
 {
+    /*
     std::string path = "D:\\Dataset\\";
 
     std::string imgpath1 = path + "4.2.01.tiff";
@@ -48,10 +174,12 @@ void AI::fade(Clip* clip1, Clip* clip2)
     }
 
     cv::destroyAllWindows();
+    */
 }
 
 void AI::blur(Clip* clip1, Clip* clip2)
 {
+    /*
     std::string path = "D:\\Dataset\\";
     // Load the first video clip
     cv::VideoCapture video1(path);
@@ -106,14 +234,16 @@ void AI::blur(Clip* clip1, Clip* clip2)
             break;
         }
     }
-
+    
     // Release video capture and writer
     video1.release();
     video2.release();
     outputVideo.release();
+    */
 }
 
 void AI::wipe(cv::VideoCapture& inputVideo1, cv::VideoCapture& inputVideo2, cv::VideoWriter& outputVideo) {
+    /*
     if (!inputVideo1.isOpened() || !inputVideo2.isOpened()) {
         std::cerr << "Error: Could not open input videos." << std::endl;
         return;
@@ -150,87 +280,14 @@ void AI::wipe(cv::VideoCapture& inputVideo1, cv::VideoCapture& inputVideo2, cv::
     inputVideo1.release();
     inputVideo2.release();
     outputVideo.release();
+    */
 }
 
-
-//Color Grading 
-void AI::warm(cv::VideoCapture& inputVideo, cv::VideoWriter& outputVideo) 
-{
-    if (!inputVideo.isOpened()) {
-        std::cerr << "Error: Could not open input video." << std::endl;
-        return;
-    }
-
-    int frame_width = static_cast<int>(inputVideo.get(cv::CAP_PROP_FRAME_WIDTH));
-    int frame_height = static_cast<int>(inputVideo.get(cv::CAP_PROP_FRAME_HEIGHT));
-    double fps = inputVideo.get(cv::CAP_PROP_FPS);
-
-    cv::Size frame_size(frame_width, frame_height);
-    
-    while (true) {
-        cv::Mat frame;
-        inputVideo >> frame;
-
-        if (frame.empty()) {
-            break;
-        }
-
-        // Apply warm coloring grading effect to the frame
-        // For a simple warm effect, we'll increase the red channel intensity
-        cv::Mat warm_frame = frame.clone();
-        cv::Mat channels[3];
-        cv::split(warm_frame, channels);
-        channels[2] += 30; // Increase the red channel intensity
-        cv::merge(channels, 3, warm_frame);
-
-        // Write the processed frame to the output video
-        outputVideo.write(warm_frame);
-    }
-
-    inputVideo.release();
-    outputVideo.release();
-}
-
-
-void AI::cold(cv::VideoCapture& inputVideo, cv::VideoWriter& outputVideo) {
-    if (!inputVideo.isOpened()) {
-        std::cerr << "Error: Could not open input video." << std::endl;
-        return;
-    }
-
-    int frame_width = static_cast<int>(inputVideo.get(cv::CAP_PROP_FRAME_WIDTH));
-    int frame_height = static_cast<int>(inputVideo.get(cv::CAP_PROP_FRAME_HEIGHT));
-    double fps = inputVideo.get(cv::CAP_PROP_FPS);
-
-    cv::Size frame_size(frame_width, frame_height);
-    
-    while (true) {
-        cv::Mat frame;
-        inputVideo >> frame;
-
-        if (frame.empty()) {
-            break;
-        }
-
-        // Apply cold coloring grading effect to the frame
-        // For a simple cold effect, we'll decrease the blue channel intensity
-        cv::Mat cold_frame = frame.clone();
-        cv::Mat channels[3];
-        cv::split(cold_frame, channels);
-        channels[0] -= 30; // Decrease the blue channel intensity
-        cv::merge(channels, 3);
-
-        // Write the processed frame to the output video
-        outputVideo.write(cold_frame);
-    }
-
-    inputVideo.release();
-    outputVideo.release();
-}
 
 
 //Effects
 void slowMotion(cv::VideoCapture& inputVideo, cv::VideoWriter& outputVideo, double slowFactor) {
+    /*
     if (!inputVideo.isOpened()) {
         std::cerr << "Error: Could not open input video." << std::endl;
         return;
@@ -258,4 +315,5 @@ void slowMotion(cv::VideoCapture& inputVideo, cv::VideoWriter& outputVideo, doub
 
     inputVideo.release();
     outputVideo.release();
+    */
 }
