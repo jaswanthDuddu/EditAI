@@ -9,6 +9,7 @@
 #ifndef AI_H
 #define AI_H
 
+
 class AI {
 public:
     // Constructor
@@ -31,6 +32,16 @@ public:
 
     //Effects
     void slowMotion(cv::VideoCapture& inputVideo, cv::VideoWriter& outputVideo, double slowFactor); //handles slow motion effect
+
+
+    //Sets the values that store the information about the video style
+    void setPacing(string value);
+
+    void setTransitions(string value);
+
+    void setColorCorrection(string value);
+
+    void setEffects(string value);
 
 private:
     string database; //text file name of database of words to compare
